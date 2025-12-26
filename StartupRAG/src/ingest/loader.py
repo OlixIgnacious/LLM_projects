@@ -36,8 +36,11 @@ def load_text_documents(directory_path: Path | None) -> List[Document]:
 
     if directory_path is None:
         directory_path = RAW_DOCUMENTS_DIR
-        
-    for file in directory_path.glob("*.txt"):
+    
+    if not directory_path.exists() or not directory_path.is_dir():
+        raise ValueError(f"Provided path {directory_path} is not a valid directory.")
+
+    for file in sorted(directory_path.glob("*.txt")):
         with open(file, "r", encoding="utf-8") as f:
             text = f.read()
             document_id = _build_document_id(file.stem)
